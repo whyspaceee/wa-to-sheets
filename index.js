@@ -8,11 +8,9 @@ const pino = require('pino');
 const qrcode = require('qrcode-terminal');
 const { google } = require('googleapis');
 
-// 👇 CONFIGURATION
 const SPREADSHEET_ID = process.env.SPREADSHEET_ID;
 const RANGE = 'Sheet1!A:C'; // Adjust sheet name if needed
 
-// 👇 LOAD SERVICE ACCOUNT AUTH
 const auth = new google.auth.GoogleAuth({
     keyFile: process.env.GOOGLE_APPLICATION_CREDENTIALS,
     scopes: ['https://www.googleapis.com/auth/spreadsheets'],
@@ -48,7 +46,7 @@ async function connectToWhatsApp() {
     const sock = makeWASocket({
         logger: pino({ level: 'silent' }),
         auth: state,
-        // browser: ["Desktop", "Chrome", "1.0"] 
+        browser: ["Sheets Logger", "Chrome", "1.0"]
     });
 
     sock.ev.on('creds.update', saveCreds);
@@ -85,7 +83,6 @@ async function connectToWhatsApp() {
                 const arrow = isMe ? '➞' : '⬅️';
                 console.log(`${arrow} ${chatID} | ${name}: ${text}`);
 
-                // 👇 USE THE NEW FUNCTION
                 await appendToSheet(chatID, name, text);
             }
         }
